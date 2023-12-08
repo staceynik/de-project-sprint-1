@@ -1,23 +1,20 @@
-DROP VIEW IF EXISTS analysis.Orders;
 CREATE OR REPLACE VIEW analysis.Orders AS
 SELECT
     o.order_id,
     o.order_ts,
     o.user_id,
-    osl.status_id AS order_status,
     o.bonus_payment,
     o.cost,
-    o.bonus_grant
+    osl.status_id AS order_status,
+    o.bonus_grant,
+    o.status
 FROM
     production.Orders o
-LEFT JOIN LATERAL (
+LEFT JOIN (
     SELECT
-        os1.status_id
+        os1.order_id,
+        os1.status_id,
+        ROW_NUMBER() OVER (PARTITION BY os1.order_id ORDER BY os1.dttm DESC) AS rn
     FROM
         production.OrderStatusLog os1
-    WHERE
-        os1.order_id = o.order_id
-    ORDER BY
-        os1.dttm DESC
-    LIMIT 1
-) osl ON TRUE;
+) osl ON o.order_id = osl.order_id AND osl.rn = 1;
