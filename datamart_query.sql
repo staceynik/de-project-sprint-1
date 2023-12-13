@@ -13,13 +13,13 @@ JOIN analysis.tmp_rfm_monetary_value m ON r.user_id = m.user_id;
 
 user_id | recency | frequency |monetary_value
 
-  71	   3	     3	          1
-  74	   3	     4	          1
-  109	   5	     4	          1
-  127	   5	     4	          1
-  128	   3	     4	          1
-  159	   1	     4	          1
-  166	   5	     4	          1
-  172	   3	     4	          1
-  211	   5	     1	          1
-  224	   5	     1	          1
+   0	   5	     5	          4
+   1	   2	     5	          3
+   2	   4	     5	          5
+   3	   4	     5	          3
+   4	   2	     5	          3
+   6	   5	     5	          5
+   7	   2	     3	          2
+   8	   5	     2	          3
+   9	   5	     3	          2
+  12	   3	     3	          1
