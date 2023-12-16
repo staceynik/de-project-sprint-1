@@ -6,11 +6,11 @@ CREATE TABLE analysis.tmp_rfm_monetary_value (
 INSERT INTO analysis.tmp_rfm_monetary_value (user_id, monetary_value)
 SELECT
     u.id AS user_id,
-    NTILE(5) OVER (ORDER BY SUM(oi.price * oi.quantity)) AS monetary_value
-FROM production.users u
-LEFT JOIN production.orders o ON u.id = o.user_id
-LEFT JOIN production.orderitems oi ON o.order_id = oi.order_id
-JOIN production.OrderStatusLog osl ON o.order_id = osl.order_id
-JOIN production.OrderStatuses os ON osl.status_id = os.id
-WHERE os.key = 'Closed' 
+    COALESCE(NTILE(5) OVER (ORDER BY SUM(oi.price * oi.quantity)), 1) AS monetary_value
+FROM analysis.Users u
+LEFT JOIN analysis.Orders o ON u.id = o.user_id
+LEFT JOIN analysis.OrderItems oi ON o.order_id = oi.order_id
+LEFT JOIN production.OrderStatusLog osl ON o.order_id = osl.order_id
+LEFT JOIN analysis.OrderStatuses os ON osl.status_id = os.id
+WHERE os.key = 'Closed' OR os.key IS NULL
 GROUP BY u.id;
