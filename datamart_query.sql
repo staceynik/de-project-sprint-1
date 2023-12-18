@@ -16,7 +16,7 @@ user_id | recency | frequency |monetary_value
    0	   5	     3	          4
    1	   2	     3	          3
    2	   4	     3	          5
-   3	   4	     3	          3
+   3	   4	     4	          3
    4	   2	     3	          3
    5	   1	     5	          5
    6	   5	     3	          5

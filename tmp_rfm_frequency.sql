@@ -6,10 +6,18 @@ CREATE TABLE analysis.tmp_rfm_frequency (
 INSERT INTO analysis.tmp_rfm_frequency (user_id, frequency)
 SELECT
     u.id AS user_id,
-    COALESCE(NTILE(5) OVER (ORDER BY COUNT(DISTINCT o.order_id)), 1) AS frequency
+    CASE
+        WHEN order_count IS NULL THEN 1
+        ELSE NTILE(5) OVER (ORDER BY order_count)
+    END AS frequency
 FROM analysis.Users u
-LEFT JOIN analysis.Orders o ON u.id = o.user_id
-LEFT JOIN production.OrderStatusLog osl ON o.order_id = osl.order_id
-LEFT JOIN analysis.OrderStatuses os ON osl.status_id = os.id
-WHERE os.key = 'Closed' OR os.key IS NULL
-GROUP BY u.id;
+LEFT JOIN (
+    SELECT
+        o.user_id,
+        COUNT(DISTINCT o.order_id) AS order_count
+    FROM analysis.Orders o
+    LEFT JOIN production.OrderStatusLog osl ON o.order_id = osl.order_id
+    LEFT JOIN analysis.OrderStatuses os ON osl.status_id = os.id
+    WHERE os.key = 'Closed' OR os.key IS NULL
+    GROUP BY o.user_id
+) filtered_orders ON u.id = filtered_orders.user_id;
