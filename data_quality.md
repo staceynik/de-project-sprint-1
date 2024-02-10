@@ -1,46 +1,42 @@
-# 1.3. Качество данных
+## Data Quality Assessment of the Source Data
 
-## Оценка качества данных, хранимых в источнике.
+When analyzing the data in the 'production' schema, the following data quality aspects were identified:
 
-При анализе данных в схеме 'production' были выявлены следующие аспекты качества данных:
+- Completeness: All mandatory fields are filled, except for the 'name' field in the production.users table.
+- Timeliness: The fields order_ts and dttm are of the timestamp type, which ensures their relevance.
+- Accuracy: The fields price and cost use the numeric type, which ensures data accuracy.
+- Consistency: The production.orderstatuslog and production.orderitems tables include foreign keys, ensuring data integrity.
+- Uniqueness: In the production.users table, the id field uses a primary key, ensuring data uniqueness.
 
-    Полнота: все обязательные поля заполнены, за исключением поля name в таблице production.users.
-    Актуальность: значения в полях order_ts и dttm имеют тип timestamp, что гарантирует их актуальность.
-    Точность: в полях price и cost используется тип numeric, что обеспечивает точность данных.
-    Консистентность: в таблицах production.orderstatuslog и production.orderitems присутствуют внешние ключи, что обеспечивает целостность данных.
-    Уникальность: в таблице production.users в поле id используется первичный ключ, что дает уникальность данным.
+Overall, the data quality in the 'production' schema is good. However, to ensure completeness, the 'name' field in the production.users table should be filled in for all users.
 
-В целом, качество данных в схеме 'production' является хорошим. Однако, для обеспечения полноты данных, поле name в таблице production.users должно быть заполнено для всех пользователей.
+## Data Quality Assurance Tools in the Source
 
-## Инструменты обеспечения качества данных в источнике.
-
-
-| Таблицы                  | Объект              | Инструмент                     |        Для чего используется         |
-| ----------------------   | --------------------| ---------------                | ------------------------------------ |
-production.users            id int                Ограничение NOT NULL PRIMARY KEY Гарантирует начичие уникальных id
-production.users	    login varchar         Ограничение NOT NULL	           Гарантирует наличие login
-production.users	    name varchar
-production.orders	    order_id int	  Ограничение NOT NULL             Гарантирует наличие order_id
-production.orders	    order_ts timestamp	  Ограничение NOT NULL	           Гарантирует наличие order_ts
-production.orders           user_id int           Ограничение NOT NULL             Гарантирует наличие user_id
-production.orders           bonus_payment num     Ограничение NOT NULL             Гарантирует наличие bonus_payment
-production.orders           cost num              Ограничение NOT NULL             Гарантирует наличие cost
-production.orders           bonus_grant num       Ограничение NOT NULL             Гарантирует наличие bonus_grant
-production.orders	    status int		  Ограничение NOT NULL             Гарантирует наличие status
-production.products         id int                Ограничение NOT NULL             Гарантирует наличие id
-production.products	    name varchar	  Ограничение NOT NULL	           Гарантирует наличие name
-production.products	    price num		  Ограничение NOT NULL             Гарантирует наличие price
-production.orderitems       id int                Ограничение NOT NULL             Гарантирует наличие id
-production.orderitems	    product_id int        Ограничение NOT NULL FOREIGN KEY Гарантирует наличие уникальных product_id
-production.orderitems	    order_id int	  Ограничение NOT NULL FOREIGN KEY Гарантирует наличие уникальных order_id
-production.orderitems	    name varchar          Ограничение NOT NULL	 	   Гарантирует наличие name
-production.orderitems	    price num	          Ограничение NOT NULL             Гарантирует наличие price	
-production.orderitems	    discount num 	  Ограничение NOT NULL	           Гарантирует наличие discount
-production.orderitems	    quantity int	  Ограничение NOT NULL	           Гарантирует наличие quantity
-production.orderstatuslog   id int                Ограничение NOT NULL             Гарантирует наличие id
-production.orderstatuslog   order_id int	  Ограничение NOT NULL FOREIGN KEY Гарантирует наличие уникальных order_id
-production.orderstatuslog   status_id int	  Ограничение NOT NULL FOREIGN KEY Гарантирует наличие уникальных status_id
-production.orderstatuslog   dttm timestamp	  Ограничение NOT NULL	           Гарантирует наличие dttm
-production.orderstatuses    id int                Ограничение NOT NULL             Гарантирует наличие id
-production.orderstatuses    key varchar           Ограничение NOT NULL             Гарантирует наличие key
-
+| Tables                        | Object            | Tool                           | Purpose                                 |
+| ----------------------------- | ----------------- | ------------------------------ | --------------------------------------- |
+| `production.users`            | id int            | NOT NULL PRIMARY KEY constraint | Ensures the presence of unique ids      |
+| `production.users`            | login varchar     | NOT NULL constraint             | Ensures the presence of login           |
+| `production.users`            | name varchar      |                                |                                         |
+| `production.orders`           | order_id int      | NOT NULL constraint             | Ensures the presence of order_id        |
+| `production.orders`           | order_ts timestamp| NOT NULL constraint             | Ensures the presence of order_ts        |
+| `production.orders`           | user_id int       | NOT NULL constraint             | Ensures the presence of user_id         |
+| `production.orders`           | bonus_payment num | NOT NULL constraint             | Ensures the presence of bonus_payment   |
+| `production.orders`           | cost num          | NOT NULL constraint             | Ensures the presence of cost            |
+| `production.orders`           | bonus_grant num   | NOT NULL constraint             | Ensures the presence of bonus_grant     |
+| `production.orders`           | status int        | NOT NULL constraint             | Ensures the presence of status          |
+| `production.products`         | id int            | NOT NULL constraint             | Ensures the presence of id              |
+| `production.products`         | name varchar      | NOT NULL constraint             | Ensures the presence of name            |
+| `production.products`         | price num         | NOT NULL constraint             | Ensures the presence of price           |
+| `production.orderitems`       | id int            | NOT NULL constraint             | Ensures the presence of id              |
+| `production.orderitems`       | product_id int    | NOT NULL FOREIGN KEY constraint | Ensures the presence of unique product_id |
+| `production.orderitems`       | order_id int      | NOT NULL FOREIGN KEY constraint | Ensures the presence of unique order_id |
+| `production.orderitems`       | name varchar      | NOT NULL constraint             | Ensures the presence of name            |
+| `production.orderitems`       | price num         | NOT NULL constraint             | Ensures the presence of price           |
+| `production.orderitems`       | discount num      | NOT NULL constraint             | Ensures the presence of discount        |
+| `production.orderitems`       | quantity int      | NOT NULL constraint             | Ensures the presence of quantity        |
+| `production.orderstatuslog`   | id int            | NOT NULL constraint             | Ensures the presence of id              |
+| `production.orderstatuslog`   | order_id int      | NOT NULL FOREIGN KEY constraint | Ensures the presence of unique order_id |
+| `production.orderstatuslog`   | status_id int     | NOT NULL FOREIGN KEY constraint | Ensures the presence of unique status_id|
+| `production.orderstatuslog`   | dttm timestamp    | NOT NULL constraint             | Ensures the presence of dttm            |
+| `production.orderstatuses`    | id int            | NOT NULL constraint             | Ensures the presence of id              |
+| `production.orderstatuses`    | key varchar       | NOT NULL constraint             | Ensures the presence of key             |
